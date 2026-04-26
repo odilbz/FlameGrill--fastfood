@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FlameGrill — Fast Food</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">🔥Flame<span>Grill</span></a>
+  <ul class="nav-links">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/menu">Menu</a></li>
+  </ul>
+  <a href="/cart" class="cart-btn">🛒 Panier <span class="cart-count">0</span></a>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">🔥 N°1 Fast Food Algérien</div>
+    <div class="hero-emoji">🍔</div>
+    <h1>Le Goût qui<br><span class="highlight">Enflamme</span> tes<br><span class="highlight2">Papilles</span></h1>
+    <p>Burgers frais, frites croustillantes, livraison rapide. Commandez maintenant!</p>
+    <div class="hero-btns">
+      <a href="/menu" class="btn-primary">🍔 Voir le Menu</a>
+      <a href="/cart" class="btn-secondary">🛒 Mon Panier</a>
+    </div>
+  </div>
+</section>
+
+<section class="features">
+  <div class="features-grid">
+    <div class="feature-card"><div class="icon">⚡</div><h3>Livraison Rapide</h3><p>Livraison en 30 min maximum</p></div>
+    <div class="feature-card"><div class="icon">🥩</div><h3>100% Frais</h3><p>Ingrédients frais chaque jour</p></div>
+    <div class="feature-card"><div class="icon">💰</div><h3>Prix Abordables</h3><p>Meilleur rapport qualité/prix</p></div>
+    <div class="feature-card"><div class="icon">🌶️</div><h3>Recettes Uniques</h3><p>Sauces exclusives maison</p></div>
+  </div>
+</section>
+
+<section class="section-title" style="padding-bottom: 4rem;">
+  <h2>Prêt à <span>Commander</span>?</h2>
+  <p style="margin-bottom:2rem;">Explorez notre menu et faites votre choix</p>
+  <a href="/menu" class="btn-primary" style="font-size:1.2rem; padding:1rem 3rem;">🍔 Commander Maintenant</a>
+</section>
+
+<footer>
+  <p>© 2026 <span>FlameGrill</span> — Fast Food Algérien</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

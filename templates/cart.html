@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panier — FlameGrill</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav>
+  <a href="/" class="logo">🔥Flame<span>Grill</span></a>
+  <ul class="nav-links">
+    <li><a href="/">Accueil</a></li>
+    <li><a href="/menu">Menu</a></li>
+  </ul>
+  <a href="/cart" class="cart-btn">🛒 Panier <span class="cart-count">{{ cart|sum(attribute='qty') if cart else 0 }}</span></a>
+</nav>
+
+<div class="section-title">
+  <h2>Mon <span>Panier</span></h2>
+</div>
+
+<section class="cart-section">
+  {% if cart %}
+    {% for item in cart %}
+    <div class="cart-item">
+      <div class="item-emoji">{{ item.emoji }}</div>
+      <div class="item-info">
+        <h4>{{ item.name }}</h4>
+        <p>Quantité: {{ item.qty }}</p>
+      </div>
+      <div class="item-price">{{ item.price * item.qty }} DA</div>
+      <button class="remove-btn" data-id="{{ item.id }}">✕ Retirer</button>
+    </div>
+    {% endfor %}
+    <div class="cart-total">
+      <h3>Total de la commande</h3>
+      <div class="total-amount">{{ total }} DA</div>
+      <button class="order-btn">🚀 Confirmer la Commande</button>
+    </div>
+  {% else %}
+    <div class="empty-cart">
+      <span class="emoji">🛒</span>
+      <h2>Votre panier est vide</h2>
+      <p style="margin: 1rem 0 2rem;">Ajoutez des articles depuis notre menu!</p>
+      <a href="/menu" class="btn-primary">🍔 Voir le Menu</a>
+    </div>
+  {% endif %}
+</section>
+
+<footer>
+  <p>© 2026 <span>FlameGrill</span> — Fast Food Algérien</p>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
