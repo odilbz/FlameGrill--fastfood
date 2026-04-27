@@ -5,79 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panier — FlameGrill</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="FlameGrill" class="logo-img">
+      <span>Flame<em>Grill</em></span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Accueil</a>
+      <a href="/menu">Menu</a>
+    </div>
+    <a href="/cart" class="cart-btn">
+      <span class="cart-icon">🛒</span>
+      <span class="cart-count">{{ cart|sum(attribute='qty') if cart else 0 }}</span>
+    </a>
+  </nav>
 
-<nav>
-  <a href="/" class="logo">🔥Flame<span>Grill</span></a>
-  <ul class="nav-links">
-    <li><a href="/">Accueil</a></li>
-    <li><a href="/menu">Menu</a></li>
-  </ul>
-  <a href="/cart" class="cart-btn">🛒 Panier <span class="cart-count">{{ cart|sum(attribute='qty') if cart else 0 }}</span></a>
-</nav>
+  <div class="cart-page">
+    <div class="menu-top">
+      <div class="section-label">Récapitulatif</div>
+      <h1>Mon <span class="flame-text">Panier</span></h1>
+    </div>
 
-<div class="section-title">
-  <h2>Mon <span>Panier</span></h2>
-</div>
-
-<section class="cart-section">
-  {% if cart %}
-    {% for item in cart %}
-    <div class="cart-item">
-      <div class="item-emoji">{{ item.emoji }}</div>
-      <div class="item-info">
-        <h4>{{ item.name }}</h4>
-        <p>Quantité: {{ item.qty }}</p>
+    {% if cart %}
+    <div class="cart-layout">
+      <div class="cart-items-col">
+        {% for item in cart %}
+        <div class="cart-row">
+          <div class="cart-row-emoji">{{ item.emoji }}</div>
+          <div class="cart-row-info">
+            <span class="cart-row-name">{{ item.name }}</span>
+            <span class="cart-row-qty">Quantité: {{ item.qty }}</span>
+          </div>
+          <div class="cart-row-right">
+            <span class="cart-row-price">{{ item.price * item.qty }} DA</span>
+            <button class="remove-btn" data-id="{{ item.id }}">✕</button>
+          </div>
+        </div>
+        {% endfor %}
       </div>
-      <div class="item-price">{{ item.price * item.qty }} DA</div>
-      <button class="remove-btn" data-id="{{ item.id }}">✕ Retirer</button>
+
+      <div class="order-panel">
+        <div class="total-row">
+          <span>Total de la commande</span>
+          <span class="total-val">{{ total }} DA</span>
+        </div>
+        <div class="divider"></div>
+        <div class="customer-info">
+          <input type="text" id="customerName" placeholder="👤 Votre nom complet" required>
+          <input type="tel" id="customerPhone" placeholder="📞 Votre numéro de téléphone" required>
+        </div>
+        <button class="confirm-btn" onclick="confirmerCommande()">
+          Confirmer la Commande 🚀
+        </button>
+        <a href="/menu" class="back-link">← Continuer mes achats</a>
+      </div>
     </div>
-    {% endfor %}
-    <div class="cart-total">
-      <h3>Total de la commande</h3>
-      <div class="total-amount">{{ total }} DA</div>
-      <div class="customer-info">
-  <input type="text" id="customerName" placeholder="👤 Votre nom" required>
-  <input type="tel" id="customerPhone" placeholder="📞 Votre téléphone" required>
-</div>
-<button class="order-btn" onclick="confirmerCommande()">🛒 Confirmer la Commande</button>
-    </div>
-  {% else %}
+
+    {% else %}
     <div class="empty-cart">
-      <span class="emoji">🛒</span>
+      <div class="empty-emoji">🛒</div>
       <h2>Votre panier est vide</h2>
-      <p style="margin: 1rem 0 2rem;">Ajoutez des articles depuis notre menu!</p>
-      <a href="/menu" class="btn-primary">🍔 Voir le Menu</a>
+      <p>Ajoutez des articles depuis notre menu pour commencer</p>
+      <a href="/menu" class="cta-btn">Voir le Menu →</a>
     </div>
-  {% endif %}
-</section>
+    {% endif %}
+  </div>
 
-<footer>
-  <p>© 2026 <span>FlameGrill</span> — Fast Food Algérien</p>
-</footer>
+  <footer>
+    <div class="footer-inner">
+      <span>© 2026 <strong>FlameGrill</strong> — Fast Food Algérien</span>
+      <span class="dev-tag">Développé par <strong>odil</strong></span>
+    </div>
+  </footer>
 
-<script>
-function confirmerCommande() {
-    const name = document.getElementById('customerName').value;
-    const phone = document.getElementById('customerPhone').value;
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+  function confirmerCommande() {
+    const name = document.getElementById('customerName').value.trim();
+    const phone = document.getElementById('customerPhone').value.trim();
     if (!name || !phone) {
-        alert("⚠️ Veuillez entrer votre nom et téléphone!");
-        return;
+      alert("⚠️ Veuillez entrer votre nom et téléphone!");
+      return;
     }
+    const btn = document.querySelector('.confirm-btn');
+    btn.textContent = "Envoi en cours...";
+    btn.disabled = true;
     fetch("/checkout", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({name: name, phone: phone})
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({name, phone})
     })
     .then(r => r.json())
     .then(data => {
-        if(data.success) {
-            alert("✅ Commande confirmée! Nous vous contacterons bientôt!");
-            window.location.href = "/";
-        }
+      if (data.success) {
+        alert("✅ Commande confirmée! Nous vous contacterons bientôt!");
+        window.location.href = "/";
+      }
     });
-}
-</script>
+  }
+  </script>
 </body>
 </html>
