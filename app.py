@@ -159,8 +159,17 @@ def checkout():
     cart = session.get("cart", [])
     if not cart:
         return jsonify({"success": False})
+    data = request.get_json()
+    name = data.get("name", "غير محدد")
+    phone = data.get("phone", "غير محدد")
     total = sum(item["price"] * item["qty"] for item in cart)
-    message = "🔔 طلب جديد!\n\n"
+    message = f"""🔔 طلب جديد!
+
+👤 الاسم: {name}
+📞 الهاتف: {phone}
+
+🛒 الطلب:
+"""
     for item in cart:
         message += f"{item['emoji']} {item['name']} x{item['qty']} = {item['price'] * item['qty']} DA\n"
     message += f"\n💰 Total: {total} DA"

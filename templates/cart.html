@@ -37,7 +37,11 @@
     <div class="cart-total">
       <h3>Total de la commande</h3>
       <div class="total-amount">{{ total }} DA</div>
-      <button class="order-btn" onclick="confirmerCommande()">🛒 Confirmer la Commande</button>
+      <div class="customer-info">
+  <input type="text" id="customerName" placeholder="👤 Votre nom" required>
+  <input type="tel" id="customerPhone" placeholder="📞 Votre téléphone" required>
+</div>
+<button class="order-btn" onclick="confirmerCommande()">🛒 Confirmer la Commande</button>
     </div>
   {% else %}
     <div class="empty-cart">
@@ -53,14 +57,23 @@
   <p>© 2026 <span>FlameGrill</span> — Fast Food Algérien</p>
 </footer>
 
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 <script>
 function confirmerCommande() {
-    fetch("/checkout", {method: "POST"})
+    const name = document.getElementById('customerName').value;
+    const phone = document.getElementById('customerPhone').value;
+    if (!name || !phone) {
+        alert("⚠️ Veuillez entrer votre nom et téléphone!");
+        return;
+    }
+    fetch("/checkout", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name: name, phone: phone})
+    })
     .then(r => r.json())
     .then(data => {
         if(data.success) {
-            alert("✅ Commande confirmée! Merci!");
+            alert("✅ Commande confirmée! Nous vous contacterons bientôt!");
             window.location.href = "/";
         }
     });
