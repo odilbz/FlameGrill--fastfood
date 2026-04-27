@@ -1,4 +1,14 @@
 from flask import Flask, render_template, request, jsonify, session
+import requests
+
+TELEGRAM_TOKEN = "8708650898:AAFUKwQRo04xeKUptXQf-mEm_W2LmSkAVbU"
+TELEGRAM_CHAT_ID = "5274379305"
+
+
+def send_telegram(message):
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    requests.post(url, data={"chat_id": TELEGRAM_CHAT_ID, "text": message})
+
 
 app = Flask(__name__)
 app.secret_key = "fastfood_secret_2026"
@@ -141,6 +151,21 @@ def remove_from_cart():
 def clear_cart():
     session["cart"] = []
     session.modified = True
+    return jsonify({"success": True})
+
+
+@app.route("/checkout", methods=["POST"])
+def checkout():
+    cart = session.get("cart", [])
+    if not cart:
+        return jsonify({"success": False})
+    total = sum(item["price"] * item["qty"] for item in cart)
+    message = "🔔 طلب جديد!\n\n"
+    for item in cart:
+        message += f"{item['emoji']} {item['name']} x{item['qty']} = {item['price'] * item['qty']} DA\n"
+    message += f"\n💰 Total: {total} DA"
+    send_telegram(message)
+    session.pop("cart", None)
     return jsonify({"success": True})
 
 
