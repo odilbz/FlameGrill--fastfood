@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ cfg.name }} — {{ cfg.slogan }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: {
+          {
+          cfg.primary
+        }
+      }
+
+      ;
+
+      --secondary: {
+          {
+          cfg.secondary
+        }
+      }
+
+      ;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ cfg.name }}" class="logo-img"
+        onerror="this.style.display='none'">
+      <span>{{ cfg.name }}</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="active">Accueil</a>
+      <a href="/menu">Menu</a>
+    </div>
+    <a href="/cart" class="cart-btn">
+      🛒 <span class="cart-count">{{ cart|sum(attribute='qty') if cart else 0 }}</span>
+    </a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="badge">🔥 {{ cfg.slogan }}</div>
+      <h1>{{ cfg.hero }}</h1>
+      <p>{{ cfg.desc }}</p>
+      <a href="/menu" class="cta-btn">Commander Maintenant →</a>
+    </div>
+    <div class="hero-visual">
+      <div class="logo-ring">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ cfg.name }}" class="hero-img"
+          onerror="this.innerHTML='🍔'">
+      </div>
+    </div>
+  </section>
+
+  <section class="cats-section">
+    <div class="section-label">Nos Catégories</div>
+    <h2>Tout ce que vous <span class="hl">aimez</span></h2>
+    <div class="cats-row">
+      <a href="/menu" class="cat-pill">🌮 Tacos</a>
+      <a href="/menu" class="cat-pill">🍕 Pizza</a>
+      <a href="/menu" class="cat-pill">🍔 Burger</a>
+      <a href="/menu" class="cat-pill">🫓 Calzoni</a>
+      <a href="/menu" class="cat-pill">🥙 Makloub</a>
+      <a href="/menu" class="cat-pill">🌯 Malfouf</a>
+      <a href="/menu" class="cat-pill">🍽️ Plats</a>
+      <a href="/menu" class="cat-pill">🥘 Gratin</a>
+      <a href="/menu" class="cat-pill">🍰 Desserts</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>© 2026 <strong>{{ cfg.name }}</strong> — {{ cfg.slogan }}</span>
+    <span class="dev-tag">Développé par <strong>{{ cfg.dev }}</strong></span>
+  </footer>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

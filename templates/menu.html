@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu — {{ cfg.name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: {
+          {
+          cfg.primary
+        }
+      }
+
+      ;
+
+      --secondary: {
+          {
+          cfg.secondary
+        }
+      }
+
+      ;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <a href="/" class="logo">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="{{ cfg.name }}" class="logo-img"
+        onerror="this.style.display='none'">
+      <span>{{ cfg.name }}</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Accueil</a>
+      <a href="/menu" class="active">Menu</a>
+    </div>
+    <a href="/cart" class="cart-btn">
+      🛒 <span class="cart-count" id="cart-count">{{ cart|sum(attribute='qty') if cart else 0 }}</span>
+    </a>
+  </nav>
+
+  <div class="page-top">
+    <div class="section-label">Notre Sélection</div>
+    <h1>Le <span class="hl">Menu</span></h1>
+  </div>
+
+  <div class="filter-bar">
+    <button class="fp active" data-cat="all">Tout voir</button>
+    {% for cat in categories %}
+    <button class="fp" data-cat="{{ cat }}">{{ cat }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="menu-grid" id="menu-grid">
+    {% for item in menu %}
+    <div class="food-card" data-category="{{ item.category }}">
+      <div class="card-emoji">{{ item.emoji }}</div>
+      <div class="card-body">
+        <div class="card-cat">{{ item.category }}</div>
+        <h3>{{ item.name }}</h3>
+        <p class="card-desc">{{ item.desc }}</p>
+        <div class="card-footer">
+          <span class="card-price">{{ item.price }} <small>DA</small></span>
+          <button class="add-btn" data-id="{{ item.id }}" data-name="{{ item.name }}" data-price="{{ item.price }}"
+            data-emoji="{{ item.emoji }}">+</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <footer>
+    <span>© 2026 <strong>{{ cfg.name }}</strong></span>
+    <span class="dev-tag">Développé par <strong>{{ cfg.dev }}</strong></span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script>
+    document.querySelectorAll('.fp').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.fp').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        document.querySelectorAll('.food-card').forEach(card => {
+          card.style.display = (cat === 'all' || card.dataset.category === cat) ? '' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>
