@@ -1,30 +1,38 @@
-document.querySelectorAll('.add-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const id = parseInt(btn.dataset.id);
-        fetch('/api/cart/add', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id })
-        }).then(r => r.json()).then(data => {
-            if (data.success) {
-                const el = document.getElementById('cart-count');
-                if (el) el.textContent = data.cart_count;
-                btn.style.transform = 'scale(0.8)';
-                setTimeout(() => btn.style.transform = '', 200);
-                showToast('✅ ' + btn.dataset.name + ' ajouté!');
-            }
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ADD TO CART
+    document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = parseInt(this.dataset.id);
+            const name = this.dataset.name || '';
+            fetch('/api/cart/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        const el = document.getElementById('cart-count');
+                        if (el) el.textContent = data.cart_count;
+                        showToast('✅ ' + name + ' ajouté!');
+                    }
+                })
+                .catch(err => console.error('Cart error:', err));
         });
     });
-});
 
-document.querySelectorAll('.rm-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        fetch('/api/cart/remove', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: parseInt(btn.dataset.id) })
-        }).then(() => location.reload());
+    // REMOVE FROM CART
+    document.querySelectorAll('.rm-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            fetch('/api/cart/remove', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: parseInt(this.dataset.id) })
+            }).then(() => location.reload());
+        });
     });
+
 });
 
 function showToast(msg) {
